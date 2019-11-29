@@ -47,7 +47,7 @@ public class GenericCrudService<MODEL, PK, REPOSITORY extends JpaRepository<MODE
 		try {
 			repository.deleteById(id);
 		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityException("Não é possivel excluir categoria que contém produtos");
+			throw new DataIntegrityException("Não é possivel excluir");
 		}
 	}
 
