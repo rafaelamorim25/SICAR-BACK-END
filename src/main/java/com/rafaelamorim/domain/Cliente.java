@@ -1,11 +1,14 @@
 package com.rafaelamorim.domain;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Cliente implements Serializable {
@@ -15,12 +18,18 @@ public class Cliente implements Serializable {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Integer id;
 	private String nome;
+	
+	@Column(unique=true)
 	private String cpf;
 	private String contato;
+	
+	@OneToMany(mappedBy="cliente")
+	private List<Venda> vendas;
+	
+	@OneToMany(mappedBy="cliente")
+	private List<Recebimento> recebimentos;
 
-	public Cliente() {
-
-	}
+	public Cliente() {}
 
 	public Cliente(Integer id, String nome, String cpf, String contato) {
 		super();
