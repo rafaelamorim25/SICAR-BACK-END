@@ -22,6 +22,7 @@ public class Venda implements Serializable{
 	private Float valor;
 	private Date data;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="cliente_id")
 	private Cliente cliente;
