@@ -22,15 +22,15 @@ public class Venda implements Serializable{
 	private Float valor;
 	private Date data;
 	
-	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="cliente_id")
 	private Cliente cliente;
 	
 	public Venda() {}
 	
-	public Venda(Integer id, Float valor, Date data) {
+	public Venda(Cliente cliente, Integer id, Float valor, Date data) {
 		super();
+		this.cliente = cliente;
 		this.id = id;
 		this.valor = valor;
 		this.data = data;
@@ -55,10 +55,19 @@ public class Venda implements Serializable{
 		this.data = data;
 	}
 
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((cliente == null) ? 0 : cliente.hashCode());
 		result = prime * result + ((data == null) ? 0 : data.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((valor == null) ? 0 : valor.hashCode());
@@ -74,6 +83,11 @@ public class Venda implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		Venda other = (Venda) obj;
+		if (cliente == null) {
+			if (other.cliente != null)
+				return false;
+		} else if (!cliente.equals(other.cliente))
+			return false;
 		if (data == null) {
 			if (other.data != null)
 				return false;
@@ -91,5 +105,4 @@ public class Venda implements Serializable{
 			return false;
 		return true;
 	}
-	
 }

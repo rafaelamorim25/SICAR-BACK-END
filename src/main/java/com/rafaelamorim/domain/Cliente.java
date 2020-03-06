@@ -1,6 +1,7 @@
 package com.rafaelamorim.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -24,10 +25,10 @@ public class Cliente implements Serializable {
 	private String contato;
 	
 	@OneToMany(mappedBy="cliente")
-	private List<Venda> vendas;
+	private List<Venda> vendas = new ArrayList<>();
 	
 	@OneToMany(mappedBy="cliente")
-	private List<Recebimento> recebimentos;
+	private List<Recebimento> recebimentos = new ArrayList<>();
 
 	public Cliente() {}
 
@@ -69,6 +70,22 @@ public class Cliente implements Serializable {
 
 	public void setContato(String contato) {
 		this.contato = contato;
+	}
+	
+	public List<Venda> getVendas() {
+		return vendas;
+	}
+
+	public void setVendas(List<Venda> vendas) {
+		this.vendas = vendas;
+	}
+
+	public List<Recebimento> getRecebimentos() {
+		return recebimentos;
+	}
+
+	public void setRecebimentos(List<Recebimento> recebimentos) {
+		this.recebimentos = recebimentos;
 	}
 
 	@Override
