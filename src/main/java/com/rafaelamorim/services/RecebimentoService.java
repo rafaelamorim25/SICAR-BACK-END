@@ -7,5 +7,4 @@ import com.rafaelamorim.repositories.RecebimentoRepository;
 
 @Service
 public class RecebimentoService extends GenericCrudService<Recebimento, Integer, RecebimentoRepository>{
-
 }

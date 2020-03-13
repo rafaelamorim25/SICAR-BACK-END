@@ -40,7 +40,9 @@ public class Venda implements Serializable {
 	}
 
 	public Venda(Integer id, Float valor, Date data, Cliente cliente) {
+
 		super();
+		this.cliente = cliente;
 		this.id = id;
 		this.valor = valor;
 		this.data = data;
@@ -83,6 +85,7 @@ public class Venda implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((cliente == null) ? 0 : cliente.hashCode());
 		result = prime * result + ((data == null) ? 0 : data.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((valor == null) ? 0 : valor.hashCode());
@@ -98,6 +101,11 @@ public class Venda implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Venda other = (Venda) obj;
+		if (cliente == null) {
+			if (other.cliente != null)
+				return false;
+		} else if (!cliente.equals(other.cliente))
+			return false;
 		if (data == null) {
 			if (other.data != null)
 				return false;
@@ -115,10 +123,8 @@ public class Venda implements Serializable {
 			return false;
 		return true;
 	}
-
 	@Override
 	public String toString() {
 		return "Venda [id=" + id + ", valor=" + valor + ", data=" + data + ", cliente=" + cliente + "]";
 	}
-
 }

@@ -3,6 +3,7 @@ package com.rafaelamorim.domain;
 import java.io.Serializable;
 import java.util.Set;
 
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,6 +28,7 @@ public class Cliente implements Serializable {
 	@Column(name = "cli_id")
 	private Integer id;
 
+
 	@Column(name = "cli_nome")
 	private String nome;
 
@@ -38,6 +40,7 @@ public class Cliente implements Serializable {
 
 	@OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
 	private Set<Venda> vendas;
+
 
 	@JsonBackReference
 	@OneToMany(mappedBy = "cliente")

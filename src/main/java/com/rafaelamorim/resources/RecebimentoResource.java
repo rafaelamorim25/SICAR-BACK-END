@@ -1,5 +1,4 @@
 package com.rafaelamorim.resources;
-
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
@@ -16,6 +15,7 @@ import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,11 +23,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.rafaelamorim.assemblers.RecebimentoResourceAssembler;
 import com.rafaelamorim.domain.Cliente;
 import com.rafaelamorim.domain.Recebimento;
 import com.rafaelamorim.dto.RecebimentoDTO;
+
 import com.rafaelamorim.services.RecebimentoService;
 
 @RestController
@@ -38,6 +38,7 @@ public class RecebimentoResource {
 	@Autowired
 	RecebimentoService service;
 	
+
 	@Autowired
 	RecebimentoResourceAssembler assembler;
 	
@@ -96,5 +97,4 @@ public class RecebimentoResource {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
-
 }

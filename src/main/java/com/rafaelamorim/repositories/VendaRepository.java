@@ -9,7 +9,5 @@ import com.rafaelamorim.domain.Venda;
 
 @Repository
 public interface VendaRepository extends JpaRepository<Venda, Integer> {
-	
 	Set<Venda> findByClienteId(int clienteId);
-
 }

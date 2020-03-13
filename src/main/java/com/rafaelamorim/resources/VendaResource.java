@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.rafaelamorim.assemblers.VendaResourceAssembler;
 import com.rafaelamorim.domain.Cliente;
 import com.rafaelamorim.domain.Venda;
@@ -96,5 +95,4 @@ public class VendaResource {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
-
 }

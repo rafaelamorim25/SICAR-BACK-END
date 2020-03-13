@@ -13,3 +13,4 @@ public interface RecebimentoRepository extends JpaRepository<Recebimento, Intege
 	Set<Recebimento> findByClienteId(Integer clienteId);
 
 }
+

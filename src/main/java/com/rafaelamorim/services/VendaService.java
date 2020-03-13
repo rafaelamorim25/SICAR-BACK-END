@@ -1,7 +1,6 @@
 package com.rafaelamorim.services;
 
 import java.util.Set;
-
 import org.springframework.stereotype.Service;
 
 import com.rafaelamorim.domain.Venda;
@@ -13,5 +12,4 @@ public class VendaService extends GenericCrudService<Venda, Integer, VendaReposi
 	public Set<Venda> findByClienteId(int clienteId) {
 		return repository.findByClienteId(clienteId);
 	}
-
 }
