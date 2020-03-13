@@ -36,6 +36,7 @@ public class Cliente implements Serializable {
 	@Column(name = "cli_contato")
 	private String contato;
 
+	@JsonBackReference
 	@OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
 	private Set<Venda> vendas;
 
