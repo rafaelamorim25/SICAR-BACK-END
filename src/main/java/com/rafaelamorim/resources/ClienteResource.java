@@ -1,11 +1,20 @@
 package com.rafaelamorim.resources;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.validation.Valid;
 
+import org.hibernate.ObjectNotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,7 +25,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.rafaelamorim.assemblers.ClienteResourceAssembler;
 import com.rafaelamorim.domain.Cliente;
+import com.rafaelamorim.dto.ClienteDTO;
 import com.rafaelamorim.services.ClienteService;
 
 @RestController
@@ -27,29 +38,41 @@ public class ClienteResource {
 	@Autowired
 	ClienteService service;
 	
+	@Autowired
+	ClienteResourceAssembler assembler;
+	
+	@Autowired
+	private ModelMapper mapper;
+	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
-	public ResponseEntity<?> find(@PathVariable Integer id) {
-		Cliente obj =  service.find(id);
-		return ResponseEntity.ok().body(obj);
+	public Resource<Cliente> find(@PathVariable Integer id) {
+		Cliente cliente = service.find(id).orElseThrow(() -> new ObjectNotFoundException(Cliente.class,
+				"Cliente não encontrado! Id: " + id));
+		
+		return assembler.toResource(cliente);
 	}
 	
 	@RequestMapping(method=RequestMethod.GET)
-	public ResponseEntity<?> findAll() {
-		List<Cliente> list = service.findAll();
-		return ResponseEntity.ok().body(list);
+	public Resources<Resource<Cliente>> findAll() {
+		List<Resource<Cliente>> list = StreamSupport.stream(service.findAll().spliterator(), false)
+				.map(assembler::toResource)
+				.collect(Collectors.toList());
+		return new Resources<>(list, linkTo(methodOn(ClienteResource.class).findAll()).withSelfRel());		
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Void> insert(@Valid @RequestBody Cliente obj) {
-		obj = service.insert(obj);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
+	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteDTO obj) {
+		Cliente cliente = mapper.map(obj, Cliente.class);
+		cliente = service.insert(cliente);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(cliente.getId()).toUri();
 		return ResponseEntity.created(uri).build();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> update(@Valid @RequestBody Cliente obj, @PathVariable Integer id) {
-		obj.setId(id);
-		obj = service.update(obj);
+	public ResponseEntity<Void> update(@Valid @RequestBody ClienteDTO obj, @PathVariable Integer id) {
+		Cliente cliente = mapper.map(obj,  Cliente.class);
+		cliente.setId(id);
+		cliente = service.update(cliente);
 		return ResponseEntity.noContent().build();
 	}
 

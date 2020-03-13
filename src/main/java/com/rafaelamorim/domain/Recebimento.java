@@ -3,38 +3,51 @@ package com.rafaelamorim.domain;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Entity;
+import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
+@Table(name = "rec_recebimento")
 public class Recebimento implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "rec_id")
 	private Integer id;
+
+	@Column(name = "rec_valor")
 	private Float valor;
+
+	@Column(name = "rec_data")
 	private Date data;
-	
-	@JsonIgnore
-	@ManyToOne
-	@JoinColumn(name="cliente_id")
+
+	@JsonManagedReference
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "cli_id")
 	private Cliente cliente;
-	
-	public Recebimento() {}
-	
-	public Recebimento(Cliente cliente, Integer id, Float valor, Date data) {
+
+	public Recebimento() {
+	}
+
+	public Recebimento(Integer id, Float valor, Date data, Cliente cliente) {
+
+
 		super();
 		this.cliente = cliente;
 		this.id = id;
 		this.valor = valor;
 		this.data = data;
+		this.cliente = cliente;
 	}
 
 	public Integer getId() {
@@ -59,6 +72,14 @@ public class Recebimento implements Serializable {
 
 	public void setData(Date data) {
 		this.data = data;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
 	}
 
 	@Override
