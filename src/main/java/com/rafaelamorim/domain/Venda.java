@@ -3,56 +3,80 @@ package com.rafaelamorim.domain;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Entity;
+import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-public class Venda implements Serializable{
+@Table(name = "vda_venda")
+public class Venda implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "vda_id")
 	private Integer id;
+	
+	@Column(name = "vda_valor")
 	private Float valor;
+	
+	@Column(name = "vda_data")
 	private Date data;
-	
-	@JsonIgnore
-	@ManyToOne
-	@JoinColumn(name="cliente_id")
+
+	@JsonManagedReference
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "cli_id")
 	private Cliente cliente;
-	
-	public Venda() {}
-	
-	public Venda(Integer id, Float valor, Date data) {
+
+	public Venda() {
+	}
+
+	public Venda(Integer id, Float valor, Date data, Cliente cliente) {
 		super();
 		this.id = id;
 		this.valor = valor;
 		this.data = data;
+		this.cliente = cliente;
 	}
-	
+
 	public Integer getId() {
 		return id;
 	}
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
 	public Float getValor() {
 		return valor;
 	}
+
 	public void setValor(Float valor) {
 		this.valor = valor;
 	}
+
 	public Date getData() {
 		return data;
 	}
+
 	public void setData(Date data) {
 		this.data = data;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
 	}
 
 	@Override
@@ -91,5 +115,10 @@ public class Venda implements Serializable{
 			return false;
 		return true;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Venda [id=" + id + ", valor=" + valor + ", data=" + data + ", cliente=" + cliente + "]";
+	}
+
 }

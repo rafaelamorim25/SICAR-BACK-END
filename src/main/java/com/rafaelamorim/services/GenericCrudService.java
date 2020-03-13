@@ -9,13 +9,11 @@ import java.util.Optional;
 
 import javax.persistence.Id;
 
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.rafaelamorim.domain.Cliente;
 import com.rafaelamorim.services.exception.DataIntegrityException;
 
 public class GenericCrudService<MODEL, PK, REPOSITORY extends JpaRepository<MODEL, PK>> {
@@ -25,10 +23,8 @@ public class GenericCrudService<MODEL, PK, REPOSITORY extends JpaRepository<MODE
 
 	MODEL model;
 
-	public MODEL find(PK id) {
-		Optional<MODEL> obj = repository.findById(id);
-		return obj.orElseThrow(() -> new ObjectNotFoundException(Cliente.class,
-				"Objeto não encontrado! Id: " + id + ", Tipo: " + model.getClass().getName()));
+	public Optional<MODEL> find(PK id) {
+		return repository.findById(id);
 	}
 
 	@Transactional
