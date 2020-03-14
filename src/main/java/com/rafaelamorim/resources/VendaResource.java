@@ -1,12 +1,7 @@
 package com.rafaelamorim.resources;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -14,8 +9,6 @@ import org.hibernate.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import com.rafaelamorim.assemblers.VendaResourceAssembler;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import com.rafaelamorim.domain.Cliente;
 import com.rafaelamorim.domain.Venda;
 import com.rafaelamorim.dto.VendaDTO;
@@ -37,58 +31,55 @@ public class VendaResource {
 	@Autowired
 	VendaService service;
 	
-	@Autowired
-	VendaResourceAssembler assembler;
-	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
-	public Resource<Venda> find(@PathVariable Integer id) {
+	public ResponseEntity<Venda> find(@PathVariable Integer id) {
 		Venda obj =  service.find(id).orElseThrow(() -> new ObjectNotFoundException(Cliente.class,
 				"Venda não encontrada! Id: " + id));
-		return assembler.toResource(obj);
+		return ResponseEntity.ok().body(obj);
 	}
 	
 	@RequestMapping(method=RequestMethod.GET)
-	public Resources<Resource<Venda>> findAll() {
-		List<Resource<Venda>> list = service.findAll().stream().map(assembler::toResource).collect(Collectors.toList());
-		return new Resources<>(list, linkTo(methodOn(VendaResource.class).findAll()).withSelfRel());
+	public ResponseEntity<List<Venda>> findAll() {
+		List<Venda> list = service.findAll();
+		return ResponseEntity.ok().body(list);
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Resource<Venda>> insert(@Valid @RequestBody VendaDTO obj) throws URISyntaxException {
+	public ResponseEntity<Venda> insert(@Valid @RequestBody VendaDTO obj) throws URISyntaxException {
 		Venda venda = new Venda();
 		PropertyMap<VendaDTO, Venda> vendaMap = new PropertyMap<VendaDTO, Venda>() {
 			@Override
 			protected void configure() {
 				map().setId(null);
-				map().getCliente().setId(source.getClienteId());
 			}
 		};
 		ModelMapper mapper = new ModelMapper();
 		mapper.addMappings(vendaMap);
 		mapper.map(obj, venda);
-		System.out.println(venda);
-		Resource<Venda> resource = assembler.toResource(service.insert(venda));
-		return ResponseEntity.created(new URI(resource.getId().expand().getHref())).body(resource);
+		venda = service.insert(venda);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(venda.getId()).toUri();
+		return ResponseEntity.created(uri).body(venda);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<Resource<Venda>> update(@Valid @RequestBody VendaDTO obj, @PathVariable Integer id) throws URISyntaxException {
-		Venda vendaAlterado = service.find(id).map(venda -> {
+	public ResponseEntity<Venda> update(@Valid @RequestBody VendaDTO obj, @PathVariable Integer id) throws URISyntaxException {
+		Venda venda = service.find(id).map(v -> {
 			PropertyMap<VendaDTO, Venda> vendaMap = new PropertyMap<VendaDTO, Venda>() {
 				@Override
 				protected void configure() {
 					map().setId(id);
-					map().getCliente().setId(source.getClienteId());
+					skip(destination.getCliente());
 				}
 			};
 			ModelMapper mapper = new ModelMapper();
 			mapper.addMappings(vendaMap);
-			mapper.map(obj, venda);
-			return service.update(venda);
+			mapper.map(obj, v);
+			return v;
 		}).orElseThrow(() -> new ObjectNotFoundException(Cliente.class,
 				"Venda não encontrada! Id: " + id));
-		Resource<Venda> resource = assembler.toResource(vendaAlterado);
-		return ResponseEntity.created(new URI(resource.getId().expand().getHref())).body(resource);
+		venda.setCliente(Cliente.builder().id(obj.getClienteId()).build());
+		service.update(venda);
+		return ResponseEntity.noContent().build();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
