@@ -4,12 +4,11 @@ import org.springframework.stereotype.Service;
 
 import com.rafaelamorim.domain.Cliente;
 import com.rafaelamorim.repositories.ClienteRepository;
-import com.rafaelamorim.services.exception.DataIntegrityException;
-import com.rafaelamorim.services.utils.ValidaCPF;
 
 @Service
 public class ClienteService extends GenericCrudService<Cliente, Integer, ClienteRepository>{
 
+		/*
 	@Override
 	public Cliente insert(Cliente obj) {
 		if(ValidaCPF.isCPF(obj.getCpf())) {
@@ -24,5 +23,5 @@ public class ClienteService extends GenericCrudService<Cliente, Integer, Cliente
 			return super.update(obj);
 		}
 		throw new DataIntegrityException("CPF inválido");
-	}
+	} */
 }
