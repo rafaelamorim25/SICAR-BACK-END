@@ -1,9 +1,8 @@
 package com.rafaelamorim.services;
 
-import java.util.Collection;
+import static java.util.Collections.emptyList;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,8 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.rafaelamorim.domain.Usuario;
 import com.rafaelamorim.repositories.UsuarioRepository;
-
-import static java.util.Collections.emptyList;
 
 @Service
 public class UsuarioService implements UserDetailsService {
