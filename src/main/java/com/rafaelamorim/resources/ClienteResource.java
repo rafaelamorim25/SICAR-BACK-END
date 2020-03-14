@@ -1,12 +1,8 @@
 package com.rafaelamorim.resources;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import javax.validation.Valid;
 
@@ -14,7 +10,6 @@ import org.hibernate.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -28,7 +23,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.rafaelamorim.assemblers.ClienteResourceAssembler;
 import com.rafaelamorim.domain.Cliente;
 import com.rafaelamorim.dto.ClienteDTO;
+import com.rafaelamorim.dto.ClienteResponse;
 import com.rafaelamorim.services.ClienteService;
+import com.rafaelamorim.services.VendaService;
 
 @RestController
 @CrossOrigin
@@ -37,6 +34,9 @@ public class ClienteResource {
 	
 	@Autowired
 	ClienteService service;
+	
+	@Autowired
+	VendaService vendaService;
 	
 	@Autowired
 	ClienteResourceAssembler assembler;
@@ -53,11 +53,17 @@ public class ClienteResource {
 	}
 	
 	@RequestMapping(method=RequestMethod.GET)
-	public Resources<Resource<Cliente>> findAll() {
-		List<Resource<Cliente>> list = StreamSupport.stream(service.findAll().spliterator(), false)
-				.map(assembler::toResource)
-				.collect(Collectors.toList());
-		return new Resources<>(list, linkTo(methodOn(ClienteResource.class).findAll()).withSelfRel());		
+	public ResponseEntity<List<ClienteResponse>> findAll() {
+		/*
+		 * List<Resource<Cliente>> list =
+		 * StreamSupport.stream(service.findAll().spliterator(), false)
+		 * .map(assembler::toResource) .collect(Collectors.toList());
+		 */
+		List<ClienteResponse> list = service.findAll().stream().map(cliente -> mapper.map(cliente, ClienteResponse.class)).collect(Collectors.toList());
+		list.forEach(cliente -> {
+			cliente.setVendas(vendaService.findByClienteId(cliente.getId()));
+		});
+		return ResponseEntity.ok().body(list);
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)

@@ -66,6 +66,7 @@ public class VendaResource {
 		ModelMapper mapper = new ModelMapper();
 		mapper.addMappings(vendaMap);
 		mapper.map(obj, venda);
+		System.out.println(venda);
 		Resource<Venda> resource = assembler.toResource(service.insert(venda));
 		return ResponseEntity.created(new URI(resource.getId().expand().getHref())).body(resource);
 	}
