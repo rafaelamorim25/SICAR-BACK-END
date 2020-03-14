@@ -9,7 +9,6 @@ import javax.validation.Valid;
 import org.hibernate.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.rafaelamorim.assemblers.ClienteResourceAssembler;
 import com.rafaelamorim.domain.Cliente;
 import com.rafaelamorim.dto.ClienteDTO;
 import com.rafaelamorim.dto.ClienteResponse;
@@ -29,54 +27,46 @@ import com.rafaelamorim.services.VendaService;
 
 @RestController
 @CrossOrigin
-@RequestMapping(value="/clientes")
+@RequestMapping(value = "/clientes")
 public class ClienteResource {
-	
+
 	@Autowired
 	ClienteService service;
-	
+
 	@Autowired
 	VendaService vendaService;
-	
-	@Autowired
-	ClienteResourceAssembler assembler;
-	
+
 	@Autowired
 	private ModelMapper mapper;
-	
-	@RequestMapping(value="/{id}", method=RequestMethod.GET)
-	public Resource<Cliente> find(@PathVariable Integer id) {
-		Cliente cliente = service.find(id).orElseThrow(() -> new ObjectNotFoundException(Cliente.class,
-				"Cliente não encontrado! Id: " + id));
-		
-		return assembler.toResource(cliente);
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public ResponseEntity<ClienteResponse> find(@PathVariable Integer id) {
+		ClienteResponse clienteResponse = service.find(id).map(cliente -> mapper.map(cliente, ClienteResponse.class))
+				.orElseThrow(() -> new ObjectNotFoundException(Cliente.class, "Cliente não encontrado! Id: " + id));
+		return ResponseEntity.ok().body(clienteResponse);
 	}
-	
-	@RequestMapping(method=RequestMethod.GET)
+
+	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<ClienteResponse>> findAll() {
-		/*
-		 * List<Resource<Cliente>> list =
-		 * StreamSupport.stream(service.findAll().spliterator(), false)
-		 * .map(assembler::toResource) .collect(Collectors.toList());
-		 */
-		List<ClienteResponse> list = service.findAll().stream().map(cliente -> mapper.map(cliente, ClienteResponse.class)).collect(Collectors.toList());
-		list.forEach(cliente -> {
-			cliente.setVendas(vendaService.findByClienteId(cliente.getId()));
-		});
+		List<ClienteResponse> list = service.findAll().stream().map(cliente -> {	
+			ClienteResponse clienteResponse =  mapper.map(cliente, ClienteResponse.class);
+			return clienteResponse;
+		}).collect(Collectors.toList());
 		return ResponseEntity.ok().body(list);
 	}
-	
+
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteDTO obj) {
 		Cliente cliente = mapper.map(obj, Cliente.class);
 		cliente = service.insert(cliente);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(cliente.getId()).toUri();
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(cliente.getId())
+				.toUri();
 		return ResponseEntity.created(uri).build();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Void> update(@Valid @RequestBody ClienteDTO obj, @PathVariable Integer id) {
-		Cliente cliente = mapper.map(obj,  Cliente.class);
+		Cliente cliente = mapper.map(obj, Cliente.class);
 		cliente.setId(id);
 		cliente = service.update(cliente);
 		return ResponseEntity.noContent().build();
