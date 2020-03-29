@@ -28,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserDetailsService userDetailsService;
 	
-	private static final String[] PUBLIC_MATCHERS = {"/login/**"};
+	private static final String[] PUBLIC_MATCHERS = {"/login/**", "/clientes/**", "/vendas/**", "/recebimentos/**"};
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {

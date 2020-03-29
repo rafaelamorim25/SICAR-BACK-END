@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -28,6 +29,7 @@ public class Venda implements Serializable {
 	@Column(name = "vda_valor")
 	private Float valor;
 	
+	@JsonFormat(pattern="dd/MM/yyyy")
 	@Column(name = "vda_data")
 	private Date data;
 

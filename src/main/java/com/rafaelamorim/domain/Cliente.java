@@ -54,5 +54,4 @@ public class Cliente implements Serializable {
 	@EqualsAndHashCode.Exclude
 	@OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
 	private Set<Recebimento> recebimentos;
-
 }
