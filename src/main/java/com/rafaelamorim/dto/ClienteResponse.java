@@ -19,14 +19,23 @@ public class ClienteResponse {
 	private Float saldo;
 	
 	public Float getSaldo() {
-		Float sumVendas = this.vendas.stream()
-				.map(v -> v.getValor())
-				.reduce((a, b) -> a + b)
-				.get();
-		Float sumRecebimentos = this.recebimentos.stream()
-				.map(r -> r.getValor())
-				.reduce((a, b) -> a + b)
-				.get();
+		
+		Float sumVendas = 0F, sumRecebimentos = 0F;
+		
+		if(!this.vendas.isEmpty()) {
+			 sumVendas = this.vendas.stream()
+						.map(v -> v.getValor())
+						.reduce((a, b) -> a + b)
+						.get();
+		}
+		
+		if(!this.recebimentos.isEmpty()) {
+			sumRecebimentos = this.recebimentos.stream()
+					.map(r -> r.getValor())
+					.reduce((a, b) -> a + b)
+					.get();
+		}
+		
 		return sumRecebimentos - sumVendas;
 	}
 	
