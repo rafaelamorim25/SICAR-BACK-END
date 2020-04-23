@@ -37,11 +37,15 @@ public class Venda implements Serializable {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "cli_id")
 	private Cliente cliente;
+	
+	@ManyToOne
+	@JoinColumn
+	private FormaPagamento formaPagamento;
 
 	public Venda() {
 	}
 
-	public Venda(Integer id, Float valor, Date data, Cliente cliente) {
+	public Venda(Integer id, Float valor, Date data, Cliente cliente, FormaPagamento formaPagamento) {
 
 		super();
 		this.cliente = cliente;
@@ -49,6 +53,7 @@ public class Venda implements Serializable {
 		this.valor = valor;
 		this.data = data;
 		this.cliente = cliente;
+		this.setFormaPagamento(formaPagamento);
 	}
 
 	public Integer getId() {
@@ -128,5 +133,13 @@ public class Venda implements Serializable {
 	@Override
 	public String toString() {
 		return "Venda [id=" + id + ", valor=" + valor + ", data=" + data + ", cliente=" + cliente + "]";
+	}
+
+	public FormaPagamento getFormaPagamento() {
+		return formaPagamento;
+	}
+
+	public void setFormaPagamento(FormaPagamento formaPagamento) {
+		this.formaPagamento = formaPagamento;
 	}
 }
