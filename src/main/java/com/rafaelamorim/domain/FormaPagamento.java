@@ -1,14 +1,13 @@
 package com.rafaelamorim.domain;
 
 import java.io.Serializable;
-import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
-import com.rafaelamorim.domain.Cliente.ClienteBuilder;
+import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "fpg_forma_pagamento")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,8 +25,11 @@ public class FormaPagamento implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE)
+	@Column(name = "fpg_id")
 	private Integer id;
-	private String formapagamento;
+	
+	@Column(name = "fpg_descricao")
+	private String descricao;
 	
 
 }

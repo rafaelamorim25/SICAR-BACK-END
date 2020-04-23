@@ -3,6 +3,7 @@ package com.rafaelamorim.dto;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.rafaelamorim.domain.FormaPagamento;
 
 import lombok.Data;
 
@@ -14,5 +15,7 @@ public class VendaResponse {
 	
 	@JsonFormat(pattern="dd/MM/yyyy")
 	private Date data;
+	
+	private FormaPagamento formaPagamento;
 
 }

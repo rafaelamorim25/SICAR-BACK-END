@@ -39,7 +39,7 @@ public class Venda implements Serializable {
 	private Cliente cliente;
 	
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name = "fpg_id")
 	private FormaPagamento formaPagamento;
 
 	public Venda() {

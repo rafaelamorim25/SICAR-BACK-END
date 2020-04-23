@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rafaelamorim.domain.Cliente;
+import com.rafaelamorim.domain.FormaPagamento;
 import com.rafaelamorim.domain.Venda;
 import com.rafaelamorim.dto.VendaDTO;
 import com.rafaelamorim.services.VendaService;
@@ -69,6 +70,7 @@ public class VendaResource {
 				protected void configure() {
 					map().setId(id);
 					skip(destination.getCliente());
+					skip(destination.getFormaPagamento());
 				}
 			};
 			ModelMapper mapper = new ModelMapper();
@@ -78,6 +80,7 @@ public class VendaResource {
 		}).orElseThrow(() -> new ObjectNotFoundException(Cliente.class,
 				"Venda não encontrada! Id: " + id));
 		venda.setCliente(Cliente.builder().id(obj.getClienteId()).build());
+		venda.setFormaPagamento(FormaPagamento.builder().id(obj.getFormaPagamentoId()).build());
 		service.update(venda);
 		return ResponseEntity.noContent().build();
 	}
